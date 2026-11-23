@@ -1,21 +1,66 @@
 {
-  "title": "Modèle de Simulation",
+  "title": "Taux liés",
   "screens": {
-    "sim": "Simulation"
+    "ruleLab": "Laboratoire",
+    "conicalTank": "Réservoir conique",
+    "slidingLadder": "Échelle glissante",
+    "oilSlick": "Nappe de pétrole"
   },
   "a11y": {
-    "screenSummary": {
-      "playArea": "La zone de jeu affiche le contenu principal de la simulation.",
-      "controlArea": "La zone de contrôle comporte un bouton Tout réinitialiser qui ramène la simulation à son état initial.",
-      "interactionHint": "Explorez la simulation en interagissant avec ses commandes."
+    "ruleLab": {
+      "screenSummary": {
+        "playArea": "Un point mobile sur une courbe définie par une équation.",
+        "controlArea": "Réglez la taille et le taux avec les curseurs. Prédisez le signe du taux lié, puis lancez ou avancez la lecture.",
+        "interactionHint": "Changez un taux d’entrée et prédisez l’évolution de la grandeur liée."
+      }
     },
-    "currentDetails": "La simulation est dans son état initial.",
-    "controls": {
-      "exampleControl": "Contrôle d'exemple"
+    "conicalTank": {
+      "screenSummary": {
+        "playArea": "Vue de côté d’un cône en remplissage avec la surface de l’eau indiquée.",
+        "controlArea": "Réglez la taille et le taux avec les curseurs. Prédisez le signe du taux lié, puis lancez ou avancez la lecture.",
+        "interactionHint": "Gardez le débit fixe. L’eau monte-t-elle plus vite près de la pointe ou du bord supérieur ?"
+      }
+    },
+    "slidingLadder": {
+      "screenSummary": {
+        "playArea": "Une échelle de longueur fixe appuyée contre un mur vertical et un sol horizontal.",
+        "controlArea": "Réglez la taille et le taux avec les curseurs. Prédisez le signe du taux lié, puis lancez ou avancez la lecture.",
+        "interactionHint": "Déplacez le pied d’une échelle de longueur fixe. Prédisez le mouvement du haut le long du mur."
+      }
+    },
+    "oilSlick": {
+      "screenSummary": {
+        "playArea": "Une nappe de pétrole circulaire dont le rayon est indiqué.",
+        "controlArea": "Réglez la taille et le taux avec les curseurs. Prédisez le signe du taux lié, puis lancez ou avancez la lecture.",
+        "interactionHint": "Gardez fixe le taux de croissance de l’aire. Comparez la vitesse du bord pour deux tailles."
+      }
     }
   },
   "preferences": {
-    "title": "Simulation",
-    "exampleToggle": "Exemple de bascule"
+    "title": "Simulation"
+  },
+  "lesson": {
+    "changeRule": "Changer de règle",
+    "chain": "Règle de la chaîne",
+    "implicit": "Dérivation implicite",
+    "size": "Mesure de départ",
+    "rate": "Taux d’entrée",
+    "play": "Lecture",
+    "pause": "Pause",
+    "step": "Avancer",
+    "predict": "Prédisez le signe du taux lié",
+    "positive": "Positif",
+    "zero": "Nul",
+    "negative": "Négatif",
+    "correct": "Le signe prédit correspond.",
+    "incorrect": "Comparez le signe du taux calculé.",
+    "resetPrediction": "Faire une autre prédiction",
+    "linked": "Taux lié",
+    "capture": "Noter cette taille et ce taux",
+    "recorded": "Paire notée",
+    "tankNote": "Une surface d’eau plus large demande plus de volume pour la même hausse du niveau.",
+    "ladderNote": "Quand le pied s’éloigne, le haut descend pour maintenir la longueur de l’échelle.",
+    "oilNote": "Chaque mètre de rayon supplémentaire ajoute plus d’aire à un cercle plus grand.",
+    "ruleNote": "Une variation d’une variable agit sur l’autre par l’équation."
   }
 }

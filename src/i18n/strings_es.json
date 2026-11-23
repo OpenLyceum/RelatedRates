@@ -1,21 +1,66 @@
 {
-  "title": "Plantilla de Simulación",
+  "title": "Razones de cambio relacionadas",
   "screens": {
-    "sim": "Simulación"
+    "ruleLab": "Laboratorio",
+    "conicalTank": "Tanque cónico",
+    "slidingLadder": "Escalera deslizante",
+    "oilSlick": "Derrame de petróleo"
   },
   "a11y": {
-    "screenSummary": {
-      "playArea": "El área de juego muestra el contenido principal de la simulación.",
-      "controlArea": "El área de control tiene un botón Restablecer todo que devuelve la simulación a su estado inicial.",
-      "interactionHint": "Explora la simulación interactuando con sus controles."
+    "ruleLab": {
+      "screenSummary": {
+        "playArea": "Un punto móvil sobre una curva definida por una ecuación.",
+        "controlArea": "Ajusta el tamaño y la tasa con los deslizadores. Predice el signo de la tasa relacionada y reproduce o avanza.",
+        "interactionHint": "Cambia una tasa de entrada y predice cómo cambia la magnitud relacionada."
+      }
     },
-    "currentDetails": "La simulación está en su estado inicial.",
-    "controls": {
-      "exampleControl": "Control de ejemplo"
+    "conicalTank": {
+      "screenSummary": {
+        "playArea": "Vista lateral de un cono que se llena con la superficie del agua marcada.",
+        "controlArea": "Ajusta el tamaño y la tasa con los deslizadores. Predice el signo de la tasa relacionada y reproduce o avanza.",
+        "interactionHint": "Mantén el caudal fijo. ¿Sube más rápido el agua cerca de la punta o del borde superior?"
+      }
+    },
+    "slidingLadder": {
+      "screenSummary": {
+        "playArea": "Una escalera de longitud fija apoyada en una pared vertical y un piso horizontal.",
+        "controlArea": "Ajusta el tamaño y la tasa con los deslizadores. Predice el signo de la tasa relacionada y reproduce o avanza.",
+        "interactionHint": "Mueve el pie de una escalera de longitud fija. Predice cómo se mueve la parte superior por la pared."
+      }
+    },
+    "oilSlick": {
+      "screenSummary": {
+        "playArea": "Un derrame circular con su radio marcado.",
+        "controlArea": "Ajusta el tamaño y la tasa con los deslizadores. Predice el signo de la tasa relacionada y reproduce o avanza.",
+        "interactionHint": "Mantén fija la tasa de crecimiento del área. Compara la velocidad del borde en dos tamaños."
+      }
     }
   },
   "preferences": {
-    "title": "Simulación",
-    "exampleToggle": "Ejemplo de alternancia"
+    "title": "Simulación"
+  },
+  "lesson": {
+    "changeRule": "Cambiar de regla",
+    "chain": "Regla de la cadena",
+    "implicit": "Derivación implícita",
+    "size": "Medida inicial",
+    "rate": "Tasa de entrada",
+    "play": "Reproducir",
+    "pause": "Pausar",
+    "step": "Avanzar",
+    "predict": "Predice el signo de la tasa relacionada",
+    "positive": "Positiva",
+    "zero": "Cero",
+    "negative": "Negativa",
+    "correct": "El signo predicho coincide.",
+    "incorrect": "Compara el signo de la tasa calculada.",
+    "resetPrediction": "Hacer otra predicción",
+    "linked": "Tasa relacionada",
+    "capture": "Registrar este tamaño y tasa",
+    "recorded": "Par registrado",
+    "tankNote": "Una superficie de agua más ancha necesita más volumen para la misma subida de nivel.",
+    "ladderNote": "Cuando el pie se aleja, la parte superior baja para mantener fija la longitud.",
+    "oilNote": "Cada metro adicional de radio agrega más área a un círculo mayor.",
+    "ruleNote": "El cambio de una variable afecta a la otra mediante la ecuación."
   }
 }

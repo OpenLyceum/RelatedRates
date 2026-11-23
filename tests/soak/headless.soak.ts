@@ -12,15 +12,19 @@
 
 import { StringProperty } from "scenerystack/axon";
 import { Tandem } from "scenerystack/tandem";
-// seed:soak-imports:start
-import SimColors from "../../src/SimColors.js";
-import { SimScreen } from "../../src/sim-screen/SimScreen.js";
-// seed:soak-imports:end
+import { ConicalTankScreen } from "../../src/conical-tank/ConicalTankScreen.js";
+import { OilSlickScreen } from "../../src/oil-slick/OilSlickScreen.js";
+import RelatedRatesColors from "../../src/RelatedRatesColors.js";
+import { RuleLabScreen } from "../../src/rule-lab/RuleLabScreen.js";
+import { SlidingLadderScreen } from "../../src/sliding-ladder/SlidingLadderScreen.js";
 import { describeHeadlessSoak } from "../helpers/headlessSoak.js";
 
 describeHeadlessSoak({
-  // seed:soak-screens:start
-  screens: () => [new SimScreen({ name: new StringProperty("Sim"), tandem: Tandem.OPT_OUT })],
-  tracked: () => ({ SimColors }),
-  // seed:soak-screens:end
+  screens: () => [
+    new RuleLabScreen({ name: new StringProperty("Rule Lab"), tandem: Tandem.OPT_OUT }),
+    new ConicalTankScreen({ name: new StringProperty("Conical Tank"), tandem: Tandem.OPT_OUT }),
+    new SlidingLadderScreen({ name: new StringProperty("Sliding Ladder"), tandem: Tandem.OPT_OUT }),
+    new OilSlickScreen({ name: new StringProperty("Oil Slick"), tandem: Tandem.OPT_OUT }),
+  ],
+  tracked: () => ({ RelatedRatesColors }),
 });

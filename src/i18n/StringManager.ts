@@ -45,34 +45,6 @@ const stringProperties = LocalizedString.getNestedStringProperties({
   es: stringsEs,
 });
 
-// seed:reference-string-types:start
-/**
- * Explicit `a11y` shape exposed by {@link StringManager.getA11yStrings}.
- * Keep this in sync with the `a11y` key in `strings_en.json` — a locale key
- * rename that is not mirrored here fails at the getter return (not silently).
- */
-export type SimA11yStrings = {
-  readonly screenSummary: {
-    readonly playAreaStringProperty: ReadOnlyProperty<string>;
-    readonly controlAreaStringProperty: ReadOnlyProperty<string>;
-    readonly interactionHintStringProperty: ReadOnlyProperty<string>;
-  };
-  readonly currentDetailsStringProperty: ReadOnlyProperty<string>;
-  readonly controls: {
-    readonly exampleControlStringProperty: ReadOnlyProperty<string>;
-  };
-};
-
-/**
- * Explicit Preferences → Simulation labels from {@link StringManager.getPreferences}.
- * Same sync rule as {@link SimA11yStrings}.
- */
-export type SimPreferenceStrings = {
-  readonly titleStringProperty: ReadOnlyProperty<string>;
-  readonly exampleToggleStringProperty: ReadOnlyProperty<string>;
-};
-// seed:reference-string-types:end
-
 /**
  * StringManager is a singleton that provides typed access to all localized
  * strings. Use `StringManager.getInstance()` everywhere — never construct it
@@ -104,35 +76,48 @@ export class StringManager {
    * Screen name StringProperties used when constructing Screen instances.
    * Each property updates automatically when the locale changes.
    */
+  public getLessonStrings() {
+    return stringProperties.lesson;
+  }
+
   public getScreenNames(): {
-    readonly simStringProperty: ReadOnlyProperty<string>;
+    readonly ruleLabStringProperty: ReadOnlyProperty<string>;
+    readonly conicalTankStringProperty: ReadOnlyProperty<string>;
+    readonly slidingLadderStringProperty: ReadOnlyProperty<string>;
+    readonly oilSlickStringProperty: ReadOnlyProperty<string>;
   } {
     return {
-      simStringProperty: stringProperties.screens.simStringProperty,
+      ruleLabStringProperty: stringProperties.screens.ruleLabStringProperty,
+      conicalTankStringProperty: stringProperties.screens.conicalTankStringProperty,
+      slidingLadderStringProperty: stringProperties.screens.slidingLadderStringProperty,
+      oilSlickStringProperty: stringProperties.screens.oilSlickStringProperty,
     };
   }
 
-  /**
-   * Accessibility (Interactive Description) StringProperties.
-   *
-   * Returns the reactive `a11y` string tree used by the parallel DOM:
-   *   - `screenSummary.*` — play-area / control-area overview and an interaction
-   *     hint, read by `SimScreenSummaryContent`.
-   *   - `currentDetails` — a paragraph describing the simulation's current state.
-   *     In a real sim, derive a live version from model Properties (see
-   *     LunarLander's ScreenSummaryContent for the canonical pattern).
-   *
-   * Add `accessibleName` / `accessibleHelpText` strings for individual controls
-   * to the `a11y` group too, then read them through this same nested tree.
-   */
-  public getA11yStrings(): SimA11yStrings {
-    return stringProperties.a11y;
+  /** Accessibility strings for the Rule Lab screen. */
+  public getRuleLabA11yStrings() {
+    return stringProperties.a11y.ruleLab;
+  }
+
+  /** Accessibility strings for the Conical Tank screen. */
+  public getConicalTankA11yStrings() {
+    return stringProperties.a11y.conicalTank;
+  }
+
+  /** Accessibility strings for the Sliding Ladder screen. */
+  public getSlidingLadderA11yStrings() {
+    return stringProperties.a11y.slidingLadder;
+  }
+
+  /** Accessibility strings for the Oil Slick screen. */
+  public getOilSlickA11yStrings() {
+    return stringProperties.a11y.oilSlick;
   }
 
   /**
    * Simulation-specific preference labels shown in Preferences → Simulation.
    */
-  public getPreferences(): SimPreferenceStrings {
+  public getPreferences() {
     return stringProperties.preferences;
   }
 }

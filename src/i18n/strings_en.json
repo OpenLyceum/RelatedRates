@@ -1,21 +1,66 @@
 {
-  "title": "SceneryStack Template",
+  "title": "Related Rates",
   "screens": {
-    "sim": "Sim"
+    "ruleLab": "Rule Lab",
+    "conicalTank": "Conical Tank",
+    "slidingLadder": "Sliding Ladder",
+    "oilSlick": "Oil Slick"
   },
   "a11y": {
-    "screenSummary": {
-      "playArea": "The play area shows the main simulation content.",
-      "controlArea": "The control area has a Reset All button that returns the simulation to its starting state.",
-      "interactionHint": "Explore the simulation by interacting with its controls."
+    "ruleLab": {
+      "screenSummary": {
+        "playArea": "A moving point on a curve defined by an equation.",
+        "controlArea": "Adjust size and rate with the sliders. Predict the sign of the linked rate, then play or step.",
+        "interactionHint": "Change an input rate and predict what happens to the linked output."
+      }
     },
-    "currentDetails": "The simulation is in its initial state.",
-    "controls": {
-      "exampleControl": "Example control"
+    "conicalTank": {
+      "screenSummary": {
+        "playArea": "Side view of a filling cone with its water surface marked.",
+        "controlArea": "Adjust size and rate with the sliders. Predict the sign of the linked rate, then play or step.",
+        "interactionHint": "Keep the inflow fixed. Does the water rise faster near the tip or near the top?"
+      }
+    },
+    "slidingLadder": {
+      "screenSummary": {
+        "playArea": "A fixed-length ladder touching a vertical wall and a horizontal floor.",
+        "controlArea": "Adjust size and rate with the sliders. Predict the sign of the linked rate, then play or step.",
+        "interactionHint": "Move the foot of a fixed-length ladder. Predict how the top moves along the wall."
+      }
+    },
+    "oilSlick": {
+      "screenSummary": {
+        "playArea": "A circular oil slick with its radius marked.",
+        "controlArea": "Adjust size and rate with the sliders. Predict the sign of the linked rate, then play or step.",
+        "interactionHint": "Keep the area-growth rate fixed. Compare how fast the edge moves at two sizes."
+      }
     }
   },
   "preferences": {
-    "title": "Simulation",
-    "exampleToggle": "Example Toggle"
+    "title": "Simulation"
+  },
+  "lesson": {
+    "changeRule": "Change rule",
+    "chain": "Chain rule",
+    "implicit": "Implicit differentiation",
+    "size": "Starting measurement",
+    "rate": "Input rate",
+    "play": "Play",
+    "pause": "Pause",
+    "step": "Step",
+    "predict": "Predict the sign of the linked rate",
+    "positive": "Positive",
+    "zero": "Zero",
+    "negative": "Negative",
+    "correct": "The predicted sign matches.",
+    "incorrect": "Compare the sign of the calculated rate.",
+    "resetPrediction": "Make another prediction",
+    "linked": "Linked rate",
+    "capture": "Record this size and rate",
+    "recorded": "Recorded pair",
+    "tankNote": "A broader water surface needs more volume for the same rise in height.",
+    "ladderNote": "As the foot moves out, the top moves down to keep the ladder length fixed.",
+    "oilNote": "Each additional meter of radius adds more area to a bigger circle.",
+    "ruleNote": "A change in one variable changes the other through the equation."
   }
 }
