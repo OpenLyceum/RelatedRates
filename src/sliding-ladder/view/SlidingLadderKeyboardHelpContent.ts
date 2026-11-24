@@ -3,9 +3,13 @@ import {
   SliderControlsKeyboardHelpSection,
   TwoColumnKeyboardHelpContent,
 } from "scenerystack/scenery-phet";
+import { HandleKeyboardHelpSection } from "../../common/HandleKeyboardHelpSection.js";
 
 export class SlidingLadderKeyboardHelpContent extends TwoColumnKeyboardHelpContent {
   public constructor() {
-    super([new BasicActionsKeyboardHelpSection()], [new SliderControlsKeyboardHelpSection()]);
+    super(
+      [new BasicActionsKeyboardHelpSection()],
+      [new SliderControlsKeyboardHelpSection(), new HandleKeyboardHelpSection(["horizontal", "vertical"])],
+    );
   }
 }

@@ -63,7 +63,11 @@ export function advance(
   const bounded = Math.max(amount(min), Math.min(amount(max), proposed));
   const stopped = rate > 0 ? bounded === amount(max) : rate < 0 && bounded === amount(min);
   if (stopped) {
-    return { size: rate > 0 ? max : min, elapsed: Math.abs((bounded - current) / rate), stopped };
+    return {
+      size: rate > 0 ? max : min,
+      elapsed: Math.abs((bounded - current) / rate),
+      stopped,
+    };
   }
   const next =
     kind === "conical-tank"
@@ -78,14 +82,14 @@ export class RelatedRatesModel implements TModel {
   public readonly scene: Scene;
   public readonly timer = new TimeModel();
   public readonly rule = new Property<"chain" | "implicit">("chain");
-  public readonly size: NumberProperty;
-  public readonly rate: NumberProperty;
+  public readonly sizeProperty: NumberProperty;
+  public readonly rateProperty: NumberProperty;
   public readonly prediction = new Property<Sign | null>(null);
 
   public constructor(scene: Scene) {
     this.scene = scene;
-    this.size = new NumberProperty(settings[this.kind].start);
-    this.rate = new NumberProperty(settings[this.kind].rate);
+    this.sizeProperty = new NumberProperty(settings[this.kind].start);
+    this.rateProperty = new NumberProperty(settings[this.kind].rate);
   }
 
   public get kind(): Experiment {
@@ -93,20 +97,20 @@ export class RelatedRatesModel implements TModel {
   }
 
   public get actualRate(): number {
-    return linkedRate(this.kind, this.size.value, this.rate.value);
+    return linkedRate(this.kind, this.sizeProperty.value, this.rateProperty.value);
   }
 
   public changeRule(): void {
     this.timer.reset();
     this.prediction.reset();
     this.rule.value = this.rule.value === "chain" ? "implicit" : "chain";
-    this.size.value = settings[this.kind].start;
-    this.rate.value = settings[this.kind].rate;
+    this.sizeProperty.value = settings[this.kind].start;
+    this.rateProperty.value = settings[this.kind].rate;
   }
 
   public stepOnce(dt: number): void {
-    const result = advance(this.kind, this.size.value, this.rate.value, dt);
-    this.size.value = result.size;
+    const result = advance(this.kind, this.sizeProperty.value, this.rateProperty.value, dt);
+    this.sizeProperty.value = result.size;
     this.timer.advance(result.elapsed);
     if (result.stopped) {
       this.timer.isPlayingProperty.value = false;
@@ -122,16 +126,16 @@ export class RelatedRatesModel implements TModel {
   public reset(): void {
     this.timer.reset();
     this.rule.reset();
-    this.size.reset();
-    this.rate.reset();
+    this.sizeProperty.reset();
+    this.rateProperty.reset();
     this.prediction.reset();
   }
 
   public dispose(): void {
     this.timer.dispose();
     this.rule.dispose();
-    this.size.dispose();
-    this.rate.dispose();
+    this.sizeProperty.dispose();
+    this.rateProperty.dispose();
     this.prediction.dispose();
   }
 }

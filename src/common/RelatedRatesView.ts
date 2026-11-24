@@ -1,5 +1,5 @@
 import { DerivedProperty, Multilink, Property } from "scenerystack/axon";
-import { Range } from "scenerystack/dot";
+import { Range, toFixedNumber } from "scenerystack/dot";
 import { localeProperty } from "scenerystack/joist";
 import { Shape } from "scenerystack/kite";
 import { Circle, Line, Path, Rectangle } from "scenerystack/scenery";
@@ -40,6 +40,7 @@ const equations = {
 const tank = { x: 305, top: 55, tip: 319, radius: 158 };
 const ladder = { left: 120, floor: 310, scale: 54 };
 const oil = { x: 305, y: 180, scale: 38 };
+const KEYBOARD_SIZE_STEP = 0.04;
 
 export class RelatedRatesView extends LessonView {
   public constructor(model: RelatedRatesModel) {
@@ -70,13 +71,13 @@ export class RelatedRatesView extends LessonView {
     } as const;
     const [title, summary, note] = namesByScene[model.scene];
     const rule = model.scene === "rule-lab";
-    const dependencies = [model.size, model.rate, model.rule, model.prediction] as const;
+    const dependencies = [model.sizeProperty, model.rateProperty, model.rule, model.prediction] as const;
     const ruleName = computed([model.rule], () => strings[`${model.rule.value}StringProperty`].value);
     const equation = computed([model.rule], () => equations[model.kind].base);
     const rateUnit = () =>
       model.kind === "conical-tank" ? " m³/s" : model.kind === "oil-slick" ? " m²/s" : rule ? "" : " m/s";
     const measurements = computed([...dependencies], () => {
-      const size = model.size.value;
+      const size = model.sizeProperty.value;
       const other = dependent(model.kind, size);
       switch (model.kind) {
         case "chain":
@@ -93,7 +94,7 @@ export class RelatedRatesView extends LessonView {
     });
     const input = computed(
       [...dependencies],
-      () => `${equations[model.kind].input} = ${format(model.rate.value)}${rateUnit()}`,
+      () => `${equations[model.kind].input} = ${format(model.rateProperty.value)}${rateUnit()}`,
     );
     const answer = computed([...dependencies], () =>
       model.prediction.value === null
@@ -111,9 +112,11 @@ export class RelatedRatesView extends LessonView {
     const derivative = computed([...dependencies], () =>
       model.prediction.value === null ? "" : equations[model.kind].derivative,
     );
-    const snapshot = new Property<{ kind: Experiment; size: number; rate: number; linked: number } | null>(null);
-    const comparison = computed([snapshot], () => {
-      const sample = snapshot.value;
+    const snapshotProperty = new Property<{ kind: Experiment; size: number; rate: number; linked: number } | null>(
+      null,
+    );
+    const comparison = computed([snapshotProperty], () => {
+      const sample = snapshotProperty.value;
       if (!sample) {
         return "";
       }
@@ -125,7 +128,7 @@ export class RelatedRatesView extends LessonView {
       hint: summary.interactionHintStringProperty,
       playDescription: summary.playAreaStringProperty,
       controlDescription: summary.controlAreaStringProperty,
-      details: computed([...dependencies, snapshot, model.timer.timeProperty], () =>
+      details: computed([...dependencies, snapshotProperty, model.timer.timeProperty], () =>
         [
           equation.value,
           measurements.value,
@@ -142,12 +145,17 @@ export class RelatedRatesView extends LessonView {
     });
 
     const recordButton = button(strings.captureStringProperty, () => {
-      snapshot.value = { kind: model.kind, size: model.size.value, rate: model.rate.value, linked: model.actualRate };
+      snapshotProperty.value = {
+        kind: model.kind,
+        size: model.sizeProperty.value,
+        rate: model.rateProperty.value,
+        linked: model.actualRate,
+      };
     });
     model.prediction.link((value) => {
       recordButton.enabled = value !== null;
     });
-    const sizeRange = new DerivedProperty(
+    const sizeRangeProperty = new DerivedProperty(
       [model.rule],
       () => new Range(settings[model.kind].min, settings[model.kind].max),
     );
@@ -158,17 +166,17 @@ export class RelatedRatesView extends LessonView {
       text(equation, 20, 286, true),
       slider(
         strings.sizeStringProperty,
-        model.size,
+        model.sizeProperty,
         settings[model.kind].min,
         rule ? settings.implicit.max : settings[model.kind].max,
         2,
         undefined,
         0.05,
-        sizeRange,
+        sizeRangeProperty,
       ),
       slider(
         strings.rateStringProperty,
-        model.rate,
+        model.rateProperty,
         settings[model.kind].rateMin,
         settings[model.kind].rateMax,
         2,
@@ -215,29 +223,33 @@ export class RelatedRatesView extends LessonView {
       column(text(measurements, 20, 610, true), text(note, 15, 610), text(comparison, 15, 610)),
       () => {
         model.reset();
-        snapshot.reset();
+        snapshotProperty.reset();
       },
     );
     this.addHandles(model, () => measurements.value);
-    Multilink.multilink([localeProperty, model.rule, model.size], () => this.draw(model));
+    Multilink.multilink([localeProperty, model.rule, model.sizeProperty], () => this.draw(model));
   }
 
   /** Repositions the handles for the current scene; set by `addHandles`. */
   private placeHandles: () => void = () => undefined;
 
   /**
-   * Grab handles on the play area drive `model.size`, the same quantity as the size slider,
-   * so the slider stays the keyboard path. Grabbing pauses the animation so the drag wins.
+   * Play-area handles drive the same size as the slider. Moving a handle pauses playback.
    * The readout shows the measurements only: the linked rate is what the student predicts.
    */
   private addHandles(model: RelatedRatesModel, readout: () => string): void {
     const plot = this.plot;
-    const setSize = (value: number) => {
+    const setSize = (value: number, digits = 2) => {
       const { min, max } = settings[model.kind];
-      model.size.value = Math.max(min, Math.min(max, Math.round(value * 100) / 100));
+      model.sizeProperty.value = Math.max(min, Math.min(max, toFixedNumber(value, digits)));
     };
     const pause = () => {
       model.timer.isPlayingProperty.value = false;
+    };
+    const strings = StringManager.getInstance().getLessonStrings();
+    const nudgeSize = (steps: number) => {
+      pause();
+      setSize(model.sizeProperty.value + steps * KEYBOARD_SIZE_STEP);
     };
     if (model.kind === "chain" || model.kind === "implicit") {
       const point = plot.handle({
@@ -246,9 +258,10 @@ export class RelatedRatesView extends LessonView {
         start: pause,
         readout,
         drag: (x) => setSize(plot.modelX(x)),
+        keyboard: { name: strings.curveHandleStringProperty, direction: "leftRight", step: nudgeSize },
       });
       this.placeHandles = () => {
-        const x = model.size.value;
+        const x = model.sizeProperty.value;
         point.place(plot.plotX(x), plot.plotY(dependent(model.kind, x)));
       };
     } else if (model.kind === "conical-tank") {
@@ -257,9 +270,10 @@ export class RelatedRatesView extends LessonView {
         start: pause,
         readout,
         drag: (_x, y) => setSize(((tank.tip - y) / (tank.tip - tank.top)) * tankHeight),
+        keyboard: { name: strings.waterHandleStringProperty, direction: "upDown", step: (_dx, dy) => nudgeSize(dy) },
       });
       this.placeHandles = () => {
-        const fraction = model.size.value / tankHeight;
+        const fraction = model.sizeProperty.value / tankHeight;
         surface.place(tank.x + tank.radius * fraction, tank.tip - (tank.tip - tank.top) * fraction);
       };
     } else if (model.kind === "sliding-ladder") {
@@ -269,20 +283,31 @@ export class RelatedRatesView extends LessonView {
         start: pause,
         readout,
         drag: (x) => setSize((x - ladder.left) / ladder.scale),
+        keyboard: { name: strings.ladderFootStringProperty, direction: "leftRight", step: nudgeSize },
       });
+      const sizeAtHeight = (height: number) => {
+        const clamped = Math.max(0, Math.min(ladderLength, height));
+        return Math.sqrt(Math.max(0, ladderLength ** 2 - clamped ** 2));
+      };
       const top = plot.handle({
         fill: Colors.secondaryColorProperty,
         cursor: "ns-resize",
         start: pause,
         readout,
         // The ladder keeps its length: raising the top pulls the foot toward the wall.
-        drag: (_x, y) => {
-          const height = Math.max(0, (ladder.floor - y) / ladder.scale);
-          setSize(Math.sqrt(Math.max(0, ladderLength ** 2 - height ** 2)));
+        drag: (_x, y) => setSize(sizeAtHeight((ladder.floor - y) / ladder.scale)),
+        keyboard: {
+          name: strings.ladderTopStringProperty,
+          direction: "upDown",
+          step: (_dx, dy) => {
+            pause();
+            const height = dependent("sliding-ladder", model.sizeProperty.value) + dy * KEYBOARD_SIZE_STEP;
+            setSize(sizeAtHeight(height), 6);
+          },
         },
       });
       this.placeHandles = () => {
-        const x = model.size.value;
+        const x = model.sizeProperty.value;
         foot.place(ladder.left + x * ladder.scale, ladder.floor);
         top.place(ladder.left, ladder.floor - dependent("sliding-ladder", x) * ladder.scale);
       };
@@ -293,14 +318,15 @@ export class RelatedRatesView extends LessonView {
         start: pause,
         readout,
         drag: (x, y) => setSize(Math.hypot(x - oil.x, y - oil.y) / oil.scale),
+        keyboard: { name: strings.oilEdgeStringProperty, direction: "leftRight", step: nudgeSize },
       });
-      this.placeHandles = () => edge.place(oil.x + model.size.value * oil.scale, oil.y);
+      this.placeHandles = () => edge.place(oil.x + model.sizeProperty.value * oil.scale, oil.y);
     }
   }
 
   private draw(model: RelatedRatesModel): void {
     this.plot.clear();
-    const size = model.size.value;
+    const size = model.sizeProperty.value;
     if (model.kind === "chain" || model.kind === "implicit") {
       this.drawRule(model.kind, size);
     } else if (model.kind === "conical-tank") {
