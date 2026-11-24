@@ -10,6 +10,7 @@ import {
   coneVolume,
   dependent,
   type Experiment,
+  ladderLength,
   type RelatedRatesModel,
   settings,
   tankHeight,
@@ -34,6 +35,11 @@ const equations = {
   },
   "oil-slick": { base: "A = πr²", derivative: "dr/dt = (dA/dt)/(2πr)", input: "dA/dt", output: "dr/dt", size: "r" },
 };
+
+// Plot-pixel geometry of the three pictured experiments, shared by drawing and dragging.
+const tank = { x: 305, top: 55, tip: 319, radius: 158 };
+const ladder = { left: 120, floor: 310, scale: 54 };
+const oil = { x: 305, y: 180, scale: 38 };
 
 export class RelatedRatesView extends LessonView {
   public constructor(model: RelatedRatesModel) {
@@ -212,7 +218,78 @@ export class RelatedRatesView extends LessonView {
         snapshot.reset();
       },
     );
+    this.addHandles(model);
     Multilink.multilink([localeProperty, model.rule, model.size], () => this.draw(model));
+  }
+
+  /** Repositions the handles for the current scene; set by `addHandles`. */
+  private placeHandles: () => void = () => undefined;
+
+  /**
+   * Grab handles on the play area drive `model.size`, the same quantity as the size slider,
+   * so the slider stays the keyboard path. Grabbing pauses the animation so the drag wins.
+   */
+  private addHandles(model: RelatedRatesModel): void {
+    const plot = this.plot;
+    const setSize = (value: number) => {
+      const { min, max } = settings[model.kind];
+      model.size.value = Math.max(min, Math.min(max, Math.round(value * 100) / 100));
+    };
+    const pause = () => {
+      model.timer.isPlayingProperty.value = false;
+    };
+    if (model.kind === "chain" || model.kind === "implicit") {
+      const point = plot.handle({
+        fill: Colors.secondaryColorProperty,
+        cursor: "ew-resize",
+        start: pause,
+        drag: (x) => setSize(plot.modelX(x)),
+      });
+      this.placeHandles = () => {
+        const x = model.size.value;
+        point.place(plot.plotX(x), plot.plotY(dependent(model.kind, x)));
+      };
+    } else if (model.kind === "conical-tank") {
+      const surface = plot.handle({
+        cursor: "ns-resize",
+        start: pause,
+        drag: (_x, y) => setSize(((tank.tip - y) / (tank.tip - tank.top)) * tankHeight),
+      });
+      this.placeHandles = () => {
+        const fraction = model.size.value / tankHeight;
+        surface.place(tank.x + tank.radius * fraction, tank.tip - (tank.tip - tank.top) * fraction);
+      };
+    } else if (model.kind === "sliding-ladder") {
+      const foot = plot.handle({
+        fill: Colors.secondaryColorProperty,
+        cursor: "ew-resize",
+        start: pause,
+        drag: (x) => setSize((x - ladder.left) / ladder.scale),
+      });
+      const top = plot.handle({
+        fill: Colors.secondaryColorProperty,
+        cursor: "ns-resize",
+        start: pause,
+        // The ladder keeps its length: raising the top pulls the foot toward the wall.
+        drag: (_x, y) => {
+          const height = Math.max(0, (ladder.floor - y) / ladder.scale);
+          setSize(Math.sqrt(Math.max(0, ladderLength ** 2 - height ** 2)));
+        },
+      });
+      this.placeHandles = () => {
+        const x = model.size.value;
+        foot.place(ladder.left + x * ladder.scale, ladder.floor);
+        top.place(ladder.left, ladder.floor - dependent("sliding-ladder", x) * ladder.scale);
+      };
+    } else {
+      const edge = plot.handle({
+        fill: Colors.secondaryColorProperty,
+        cursor: "move",
+        start: pause,
+        drag: (x, y) => setSize(Math.hypot(x - oil.x, y - oil.y) / oil.scale),
+      });
+      this.placeHandles = () => edge.place(oil.x + model.size.value * oil.scale, oil.y);
+    }
   }
 
   private draw(model: RelatedRatesModel): void {
@@ -227,6 +304,7 @@ export class RelatedRatesView extends LessonView {
     } else {
       this.drawOil(size);
     }
+    this.placeHandles();
   }
 
   private drawRule(kind: "chain" | "implicit", x: number): void {
@@ -256,10 +334,7 @@ export class RelatedRatesView extends LessonView {
 
   private drawTank(height: number): void {
     const plot = this.plot;
-    const x = 305;
-    const top = 55;
-    const tip = 319;
-    const radius = 158;
+    const { x, top, tip, radius } = tank;
     const fraction = height / tankHeight;
     const surface = tip - (tip - top) * fraction;
     const half = radius * fraction;
@@ -297,9 +372,7 @@ export class RelatedRatesView extends LessonView {
 
   private drawLadder(x: number): void {
     const layers = this.plot.layers;
-    const left = 120;
-    const floor = 310;
-    const scale = 54;
+    const { left, floor, scale } = ladder;
     const end = left + x * scale;
     const top = floor - dependent("sliding-ladder", x) * scale;
     layers.addChild(new Rectangle(left - 13, 22, 13, floor - 22, { fill: Colors.panelBorderColorProperty }));
@@ -321,9 +394,8 @@ export class RelatedRatesView extends LessonView {
   }
 
   private drawOil(radius: number): void {
-    const x = 305;
-    const y = 180;
-    const pixels = radius * 38;
+    const { x, y } = oil;
+    const pixels = radius * oil.scale;
     this.plot.layers.addChild(
       new Circle(pixels, {
         x,

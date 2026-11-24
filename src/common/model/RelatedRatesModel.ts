@@ -5,7 +5,7 @@ import { TimeModel } from "../TimeModel.js";
 type Scene = "rule-lab" | "conical-tank" | "sliding-ladder" | "oil-slick";
 export type Experiment = "chain" | "implicit" | Exclude<Scene, "rule-lab">;
 type Sign = -1 | 0 | 1;
-const ladderLength = 5;
+export const ladderLength = 5;
 export const tankHeight = 6;
 export const coneVolume = (height: number): number => (Math.PI * height ** 3) / 12;
 
