@@ -71,13 +71,13 @@ export class RelatedRatesView extends LessonView {
     } as const;
     const [title, summary, note] = namesByScene[model.scene];
     const rule = model.scene === "rule-lab";
-    const dependencies = [model.size, model.rate, model.rule, model.prediction] as const;
+    const dependencies = [model.sizeProperty, model.rateProperty, model.rule, model.prediction] as const;
     const ruleName = computed([model.rule], () => strings[`${model.rule.value}StringProperty`].value);
     const equation = computed([model.rule], () => equations[model.kind].base);
     const rateUnit = () =>
       model.kind === "conical-tank" ? " m³/s" : model.kind === "oil-slick" ? " m²/s" : rule ? "" : " m/s";
     const measurements = computed([...dependencies], () => {
-      const size = model.size.value;
+      const size = model.sizeProperty.value;
       const other = dependent(model.kind, size);
       switch (model.kind) {
         case "chain":
@@ -94,7 +94,7 @@ export class RelatedRatesView extends LessonView {
     });
     const input = computed(
       [...dependencies],
-      () => `${equations[model.kind].input} = ${format(model.rate.value)}${rateUnit()}`,
+      () => `${equations[model.kind].input} = ${format(model.rateProperty.value)}${rateUnit()}`,
     );
     const answer = computed([...dependencies], () =>
       model.prediction.value === null
@@ -147,8 +147,8 @@ export class RelatedRatesView extends LessonView {
     const recordButton = button(strings.captureStringProperty, () => {
       snapshotProperty.value = {
         kind: model.kind,
-        size: model.size.value,
-        rate: model.rate.value,
+        size: model.sizeProperty.value,
+        rate: model.rateProperty.value,
         linked: model.actualRate,
       };
     });
@@ -166,7 +166,7 @@ export class RelatedRatesView extends LessonView {
       text(equation, 20, 286, true),
       slider(
         strings.sizeStringProperty,
-        model.size,
+        model.sizeProperty,
         settings[model.kind].min,
         rule ? settings.implicit.max : settings[model.kind].max,
         2,
@@ -176,7 +176,7 @@ export class RelatedRatesView extends LessonView {
       ),
       slider(
         strings.rateStringProperty,
-        model.rate,
+        model.rateProperty,
         settings[model.kind].rateMin,
         settings[model.kind].rateMax,
         2,
@@ -227,7 +227,7 @@ export class RelatedRatesView extends LessonView {
       },
     );
     this.addHandles(model, () => measurements.value);
-    Multilink.multilink([localeProperty, model.rule, model.size], () => this.draw(model));
+    Multilink.multilink([localeProperty, model.rule, model.sizeProperty], () => this.draw(model));
   }
 
   /** Repositions the handles for the current scene; set by `addHandles`. */
@@ -241,7 +241,7 @@ export class RelatedRatesView extends LessonView {
     const plot = this.plot;
     const setSize = (value: number, digits = 2) => {
       const { min, max } = settings[model.kind];
-      model.size.value = Math.max(min, Math.min(max, toFixedNumber(value, digits)));
+      model.sizeProperty.value = Math.max(min, Math.min(max, toFixedNumber(value, digits)));
     };
     const pause = () => {
       model.timer.isPlayingProperty.value = false;
@@ -249,7 +249,7 @@ export class RelatedRatesView extends LessonView {
     const strings = StringManager.getInstance().getLessonStrings();
     const nudgeSize = (steps: number) => {
       pause();
-      setSize(model.size.value + steps * KEYBOARD_SIZE_STEP);
+      setSize(model.sizeProperty.value + steps * KEYBOARD_SIZE_STEP);
     };
     if (model.kind === "chain" || model.kind === "implicit") {
       const point = plot.handle({
@@ -261,7 +261,7 @@ export class RelatedRatesView extends LessonView {
         keyboard: { name: strings.curveHandleStringProperty, direction: "leftRight", step: nudgeSize },
       });
       this.placeHandles = () => {
-        const x = model.size.value;
+        const x = model.sizeProperty.value;
         point.place(plot.plotX(x), plot.plotY(dependent(model.kind, x)));
       };
     } else if (model.kind === "conical-tank") {
@@ -273,7 +273,7 @@ export class RelatedRatesView extends LessonView {
         keyboard: { name: strings.waterHandleStringProperty, direction: "upDown", step: (_dx, dy) => nudgeSize(dy) },
       });
       this.placeHandles = () => {
-        const fraction = model.size.value / tankHeight;
+        const fraction = model.sizeProperty.value / tankHeight;
         surface.place(tank.x + tank.radius * fraction, tank.tip - (tank.tip - tank.top) * fraction);
       };
     } else if (model.kind === "sliding-ladder") {
@@ -301,13 +301,13 @@ export class RelatedRatesView extends LessonView {
           direction: "upDown",
           step: (_dx, dy) => {
             pause();
-            const height = dependent("sliding-ladder", model.size.value) + dy * KEYBOARD_SIZE_STEP;
+            const height = dependent("sliding-ladder", model.sizeProperty.value) + dy * KEYBOARD_SIZE_STEP;
             setSize(sizeAtHeight(height), 6);
           },
         },
       });
       this.placeHandles = () => {
-        const x = model.size.value;
+        const x = model.sizeProperty.value;
         foot.place(ladder.left + x * ladder.scale, ladder.floor);
         top.place(ladder.left, ladder.floor - dependent("sliding-ladder", x) * ladder.scale);
       };
@@ -320,13 +320,13 @@ export class RelatedRatesView extends LessonView {
         drag: (x, y) => setSize(Math.hypot(x - oil.x, y - oil.y) / oil.scale),
         keyboard: { name: strings.oilEdgeStringProperty, direction: "leftRight", step: nudgeSize },
       });
-      this.placeHandles = () => edge.place(oil.x + model.size.value * oil.scale, oil.y);
+      this.placeHandles = () => edge.place(oil.x + model.sizeProperty.value * oil.scale, oil.y);
     }
   }
 
   private draw(model: RelatedRatesModel): void {
     this.plot.clear();
-    const size = model.size.value;
+    const size = model.sizeProperty.value;
     if (model.kind === "chain" || model.kind === "implicit") {
       this.drawRule(model.kind, size);
     } else if (model.kind === "conical-tank") {

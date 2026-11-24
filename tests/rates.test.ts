@@ -31,7 +31,7 @@ describe("related rates", () => {
     const model = new RelatedRatesModel("conical-tank");
     model.timer.isPlayingProperty.value = true;
     model.step(1000);
-    expect(model.size.value).toBe(6);
+    expect(model.sizeProperty.value).toBe(6);
     expect(model.timer.isPlayingProperty.value).toBe(false);
     model.dispose();
   });

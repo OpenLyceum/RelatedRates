@@ -10,62 +10,62 @@ export const tankHeight = 6;
 export const coneVolume = (height: number): number => (Math.PI * height ** 3) / 12;
 
 export const settings = {
-  chain: { start: 2, min: 1, max: 4, rateProperty: 0.5, rateMin: -1, rateMax: 1, units: "" },
-  implicit: { start: 3, min: 1, max: 6, rateProperty: 0.5, rateMin: -1, rateMax: 1, units: "" },
-  "conical-tank": { start: 2, min: 0.5, max: tankHeight, rateProperty: 0.75, rateMin: 0, rateMax: 5, units: " m/s" },
-  "sliding-ladder": { start: 3, min: 0.5, max: 4.5, rateProperty: 0.5, rateMin: -1, rateMax: 1, units: " m/s" },
-  "oil-slick": { start: 1, min: 0.5, max: 4, rateProperty: 1, rateMin: 0.05, rateMax: 5, units: " m/s" },
+  chain: { start: 2, min: 1, max: 4, rate: 0.5, rateMin: -1, rateMax: 1, units: "" },
+  implicit: { start: 3, min: 1, max: 6, rate: 0.5, rateMin: -1, rateMax: 1, units: "" },
+  "conical-tank": { start: 2, min: 0.5, max: tankHeight, rate: 0.75, rateMin: 0, rateMax: 5, units: " m/s" },
+  "sliding-ladder": { start: 3, min: 0.5, max: 4.5, rate: 0.5, rateMin: -1, rateMax: 1, units: " m/s" },
+  "oil-slick": { start: 1, min: 0.5, max: 4, rate: 1, rateMin: 0.05, rateMax: 5, units: " m/s" },
 } as const;
 
-export function dependent(kind: Experiment, sizeProperty: number): number {
+export function dependent(kind: Experiment, size: number): number {
   switch (kind) {
     case "chain":
-      return sizeProperty ** 2;
+      return size ** 2;
     case "implicit":
-      return 12 / sizeProperty;
+      return 12 / size;
     case "conical-tank":
-      return sizeProperty / 2;
+      return size / 2;
     case "sliding-ladder":
-      return Math.sqrt(ladderLength ** 2 - sizeProperty ** 2);
+      return Math.sqrt(ladderLength ** 2 - size ** 2);
     case "oil-slick":
-      return Math.PI * sizeProperty ** 2;
+      return Math.PI * size ** 2;
   }
 }
 
 /** @internal Exposed for direct checks of the differentiated equations. */
-export function linkedRate(kind: Experiment, sizeProperty: number, rateProperty: number): number {
+export function linkedRate(kind: Experiment, size: number, rate: number): number {
   switch (kind) {
     case "chain":
-      return 2 * sizeProperty * rateProperty;
+      return 2 * size * rate;
     case "implicit":
-      return (-12 * rateProperty) / sizeProperty ** 2;
+      return (-12 * rate) / size ** 2;
     case "conical-tank":
-      return (4 * rateProperty) / (Math.PI * sizeProperty ** 2);
+      return (4 * rate) / (Math.PI * size ** 2);
     case "sliding-ladder":
-      return (-sizeProperty * rateProperty) / dependent(kind, sizeProperty);
+      return (-size * rate) / dependent(kind, size);
     case "oil-slick":
-      return rateProperty / (2 * Math.PI * sizeProperty);
+      return rate / (2 * Math.PI * size);
   }
 }
 
 /** @internal Exposed for direct checks of geometry and boundary timing. */
 export function advance(
   kind: Experiment,
-  sizeProperty: number,
-  rateProperty: number,
+  size: number,
+  rate: number,
   dt: number,
-): { sizeProperty: number; elapsed: number; stopped: boolean } {
+): { size: number; elapsed: number; stopped: boolean } {
   const { min, max } = settings[kind];
   const amount =
     kind === "conical-tank" ? coneVolume : kind === "oil-slick" ? (r: number) => Math.PI * r ** 2 : (x: number) => x;
-  const current = amount(sizeProperty);
-  const proposed = current + rateProperty * dt;
+  const current = amount(size);
+  const proposed = current + rate * dt;
   const bounded = Math.max(amount(min), Math.min(amount(max), proposed));
-  const stopped = rateProperty > 0 ? bounded === amount(max) : rateProperty < 0 && bounded === amount(min);
+  const stopped = rate > 0 ? bounded === amount(max) : rate < 0 && bounded === amount(min);
   if (stopped) {
     return {
-      sizeProperty: rateProperty > 0 ? max : min,
-      elapsed: Math.abs((bounded - current) / rateProperty),
+      size: rate > 0 ? max : min,
+      elapsed: Math.abs((bounded - current) / rate),
       stopped,
     };
   }
@@ -75,7 +75,7 @@ export function advance(
       : kind === "oil-slick"
         ? Math.sqrt(bounded / Math.PI)
         : bounded;
-  return { sizeProperty: next, elapsed: dt, stopped };
+  return { size: next, elapsed: dt, stopped };
 }
 
 export class RelatedRatesModel implements TModel {
@@ -89,7 +89,7 @@ export class RelatedRatesModel implements TModel {
   public constructor(scene: Scene) {
     this.scene = scene;
     this.sizeProperty = new NumberProperty(settings[this.kind].start);
-    this.rateProperty = new NumberProperty(settings[this.kind].rateProperty);
+    this.rateProperty = new NumberProperty(settings[this.kind].rate);
   }
 
   public get kind(): Experiment {
@@ -105,12 +105,12 @@ export class RelatedRatesModel implements TModel {
     this.prediction.reset();
     this.rule.value = this.rule.value === "chain" ? "implicit" : "chain";
     this.sizeProperty.value = settings[this.kind].start;
-    this.rateProperty.value = settings[this.kind].rateProperty;
+    this.rateProperty.value = settings[this.kind].rate;
   }
 
   public stepOnce(dt: number): void {
     const result = advance(this.kind, this.sizeProperty.value, this.rateProperty.value, dt);
-    this.sizeProperty.value = result.sizeProperty;
+    this.sizeProperty.value = result.size;
     this.timer.advance(result.elapsed);
     if (result.stopped) {
       this.timer.isPlayingProperty.value = false;
