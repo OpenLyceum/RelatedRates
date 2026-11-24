@@ -1,5 +1,5 @@
 import { DerivedProperty, type NumberProperty, type ReadOnlyProperty, type TReadOnlyProperty } from "scenerystack/axon";
-import { Bounds2, Dimension2, Range, Vector2 } from "scenerystack/dot";
+import { Bounds2, Dimension2, Range, roundSymmetric, Vector2 } from "scenerystack/dot";
 import { localeProperty } from "scenerystack/joist";
 import { Shape } from "scenerystack/kite";
 import {
@@ -86,7 +86,7 @@ export function slider(
     thumbFill: Colors.accentColorProperty,
     thumbTouchAreaXDilation: 7,
     thumbTouchAreaYDilation: 7,
-    ...(step ? { constrainValue: (x: number) => Math.round(x / step) * step, keyboardStep: step } : {}),
+    ...(step ? { constrainValue: (x: number) => roundSymmetric(x / step) * step, keyboardStep: step } : {}),
   });
   return column(text(caption, 15, 285, true), control);
 }
@@ -297,7 +297,11 @@ type HandleOptions = {
   end?: () => void;
   // For a quantity with no slider: the handle joins the tab order and the arrow
   // keys move it by whole steps (Shift for quarter steps), passed as (dx, dy).
-  keyboard?: { name: TReadOnlyProperty<string>; step: (dx: number, dy: number) => void };
+  keyboard?: {
+    name: TReadOnlyProperty<string>;
+    direction: "leftRight" | "upDown";
+    step: (dx: number, dy: number) => void;
+  };
   // Value label shown above the handle while it is hovered or dragged, read on each place().
   readout?: () => string;
 };
@@ -370,12 +374,21 @@ class PlotHandle extends Node {
     if (keyboard) {
       this.tagName = "div";
       this.focusable = true;
+      this.ariaRole = "application";
+      this.accessibleNameBehavior = (_node, nodeOptions, name) => ({ ...nodeOptions, ariaLabel: name });
       this.accessibleName = keyboard.name;
-      this.accessibleRoleDescription = "movable";
       this.keyboardListener = new KeyboardDragListener({
+        keyboardDragDirection: keyboard.direction,
         dragDelta: 1,
         shiftDragDelta: 0.25,
-        drag: (_event, listener) => keyboard.step(listener.modelDelta.x, -listener.modelDelta.y),
+        positionProperty: {
+          get value() {
+            return Vector2.ZERO;
+          },
+          set value(delta: Vector2) {
+            keyboard.step(delta.x, -delta.y);
+          },
+        },
       });
       this.addInputListener(this.keyboardListener);
     }
@@ -479,6 +492,6 @@ export class LessonView extends ScreenView {
     this.addChild(sidebar);
     this.addChild(notes);
     this.addChild(resetButton);
-    this.addChild(new Node({ pdomOrder: [controls, resetButton] }));
+    this.addChild(new Node({ pdomOrder: [this.plot, controls, resetButton] }));
   }
 }
