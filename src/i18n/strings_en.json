@@ -10,28 +10,28 @@
     "ruleLab": {
       "screenSummary": {
         "playArea": "A moving point on a curve defined by an equation.",
-        "controlArea": "Adjust size and rate with the sliders. Predict the sign of the linked rate, then play or step.",
+        "controlArea": "Adjust the measurement and input rate, play or step, predict how the linked rate changes, and reveal the derivation step by step.",
         "interactionHint": "Change an input rate and predict what happens to the linked output."
       }
     },
     "conicalTank": {
       "screenSummary": {
         "playArea": "Side view of a filling cone with its water surface marked.",
-        "controlArea": "Adjust size and rate with the sliders. Predict the sign of the linked rate, then play or step.",
+        "controlArea": "Adjust the measurement and input rate, play or step, predict how the linked rate changes, and reveal the derivation step by step.",
         "interactionHint": "Keep the inflow fixed. Does the water rise faster near the tip or near the top?"
       }
     },
     "slidingLadder": {
       "screenSummary": {
         "playArea": "A fixed-length ladder touching a vertical wall and a horizontal floor.",
-        "controlArea": "Adjust size and rate with the sliders. Predict the sign of the linked rate, then play or step.",
+        "controlArea": "Adjust the measurement and input rate, play or step, predict how the linked rate changes, and reveal the derivation step by step.",
         "interactionHint": "Move the foot of a fixed-length ladder. Predict how the top moves along the wall."
       }
     },
     "oilSlick": {
       "screenSummary": {
         "playArea": "A circular oil slick with its radius marked.",
-        "controlArea": "Adjust size and rate with the sliders. Predict the sign of the linked rate, then play or step.",
+        "controlArea": "Adjust the measurement and input rate, play or step, predict how the linked rate changes, and reveal the derivation step by step.",
         "interactionHint": "Keep the area-growth rate fixed. Compare how fast the edge moves at two sizes."
       }
     }
@@ -40,7 +40,6 @@
     "title": "Simulation"
   },
   "lesson": {
-    "changeRule": "Change rule",
     "curveHandle": "Curve point",
     "waterHandle": "Water surface",
     "ladderFoot": "Foot of the ladder",
@@ -50,26 +49,26 @@
     "moveHandleHorizontal": "Use Left and Right or A and D to move horizontally.",
     "moveHandleVertical": "Use Up and Down or W and S to move vertically.",
     "moveHandleFine": "Hold Shift while moving to take smaller steps.",
-    "chain": "Chain rule",
-    "implicit": "Implicit differentiation",
-    "size": "Starting measurement",
+    "size": "Measurement",
     "rate": "Input rate",
     "play": "Play",
     "pause": "Pause",
     "step": "Step",
-    "predict": "Predict the sign of the linked rate",
-    "positive": "Positive",
-    "zero": "Zero",
-    "negative": "Negative",
-    "correct": "The predicted sign matches.",
-    "incorrect": "Compare the sign of the calculated rate.",
-    "resetPrediction": "Make another prediction",
-    "linked": "Linked rate",
-    "capture": "Record this size and rate",
-    "recorded": "Recorded pair",
+    "correct": "Right.",
+    "incorrect": "Not quite.",
     "tankNote": "A broader water surface needs more volume for the same rise in height.",
     "ladderNote": "As the foot moves out, the top moves down to keep the ladder length fixed.",
     "oilNote": "Each additional meter of radius adds more area to a bigger circle.",
-    "ruleNote": "A change in one variable changes the other through the equation."
+    "ruleNote": "Watch the arrows: the vertical one is the linked rate.",
+    "relation": "Relation",
+    "predictPrompt": "Keep the input rate fixed. As {{size}} increases, will |{{output}}| get…",
+    "larger": "Larger",
+    "same": "The same",
+    "smaller": "Smaller",
+    "largerTrend": "Here |{{output}}| grows as {{size}} grows.",
+    "sameTrend": "Here |{{output}}| does not change as {{size}} grows.",
+    "smallerTrend": "Here |{{output}}| shrinks as {{size}} grows.",
+    "nextStep": "Next step",
+    "hideSteps": "Hide steps"
   }
 }

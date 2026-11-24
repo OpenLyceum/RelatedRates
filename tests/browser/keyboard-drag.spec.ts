@@ -14,9 +14,9 @@ for (const { screen, controls } of [
 ]) {
   test(`screen ${screen} exposes its picture handles in the tab order`, async ({ page }) => {
     await page.goto(`/?ea&screens=${screen}`);
-    const measurement = page.getByRole("slider", { name: "Starting measurement", exact: true });
+    const measurement = page.getByRole("slider", { name: /^Measurement / });
     for (const { name, key, increases } of controls) {
-      const handle = page.getByRole("application", { name, exact: true });
+      const handle = page.getByText(name, { exact: true });
       await handle.focus();
       await page.keyboard.press("Shift+Tab");
       await page.keyboard.press("Tab");
@@ -29,3 +29,14 @@ for (const { screen, controls } of [
     }
   });
 }
+
+test("a prediction and the derivation are read in the screen description", async ({ page }) => {
+  await page.goto("/?ea&screens=2");
+  await page.getByRole("button", { name: "Smaller", exact: true }).press("Enter");
+  await expect(page.getByText(/Right\. Here \|dh\/dt\| shrinks as h grows\./)).toBeAttached();
+  const next = page.getByRole("button", { name: "Next step", exact: true });
+  for (let i = 0; i < 4; i++) {
+    await next.press("Enter");
+  }
+  await expect(page.getByText(/dh\/dt = 0\.2387 m\/s/).first()).toBeAttached();
+});

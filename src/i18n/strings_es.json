@@ -10,28 +10,28 @@
     "ruleLab": {
       "screenSummary": {
         "playArea": "Un punto móvil sobre una curva definida por una ecuación.",
-        "controlArea": "Ajusta el tamaño y la tasa con los deslizadores. Predice el signo de la tasa relacionada y reproduce o avanza.",
+        "controlArea": "Ajusta la medida y la tasa de entrada, reproduce o avanza paso a paso, predice cómo cambia la tasa vinculada y revela la derivación paso a paso.",
         "interactionHint": "Cambia una tasa de entrada y predice cómo cambia la magnitud relacionada."
       }
     },
     "conicalTank": {
       "screenSummary": {
         "playArea": "Vista lateral de un cono que se llena con la superficie del agua marcada.",
-        "controlArea": "Ajusta el tamaño y la tasa con los deslizadores. Predice el signo de la tasa relacionada y reproduce o avanza.",
+        "controlArea": "Ajusta la medida y la tasa de entrada, reproduce o avanza paso a paso, predice cómo cambia la tasa vinculada y revela la derivación paso a paso.",
         "interactionHint": "Mantén el caudal fijo. ¿Sube más rápido el agua cerca de la punta o del borde superior?"
       }
     },
     "slidingLadder": {
       "screenSummary": {
         "playArea": "Una escalera de longitud fija apoyada en una pared vertical y un piso horizontal.",
-        "controlArea": "Ajusta el tamaño y la tasa con los deslizadores. Predice el signo de la tasa relacionada y reproduce o avanza.",
+        "controlArea": "Ajusta la medida y la tasa de entrada, reproduce o avanza paso a paso, predice cómo cambia la tasa vinculada y revela la derivación paso a paso.",
         "interactionHint": "Mueve el pie de una escalera de longitud fija. Predice cómo se mueve la parte superior por la pared."
       }
     },
     "oilSlick": {
       "screenSummary": {
         "playArea": "Un derrame circular con su radio marcado.",
-        "controlArea": "Ajusta el tamaño y la tasa con los deslizadores. Predice el signo de la tasa relacionada y reproduce o avanza.",
+        "controlArea": "Ajusta la medida y la tasa de entrada, reproduce o avanza paso a paso, predice cómo cambia la tasa vinculada y revela la derivación paso a paso.",
         "interactionHint": "Mantén fija la tasa de crecimiento del área. Compara la velocidad del borde en dos tamaños."
       }
     }
@@ -40,7 +40,6 @@
     "title": "Simulación"
   },
   "lesson": {
-    "changeRule": "Cambiar de regla",
     "curveHandle": "Punto de la curva",
     "waterHandle": "Superficie del agua",
     "ladderFoot": "Pie de la escalera",
@@ -50,26 +49,26 @@
     "moveHandleHorizontal": "Usa Izquierda y Derecha o A y D para mover el control horizontalmente.",
     "moveHandleVertical": "Usa Arriba y Abajo o W y S para mover el control verticalmente.",
     "moveHandleFine": "Mantén pulsada Mayús para mover el control en pasos más pequeños.",
-    "chain": "Regla de la cadena",
-    "implicit": "Derivación implícita",
-    "size": "Medida inicial",
+    "size": "Medida",
     "rate": "Tasa de entrada",
     "play": "Reproducir",
     "pause": "Pausar",
     "step": "Avanzar",
-    "predict": "Predice el signo de la tasa relacionada",
-    "positive": "Positiva",
-    "zero": "Cero",
-    "negative": "Negativa",
-    "correct": "El signo predicho coincide.",
-    "incorrect": "Compara el signo de la tasa calculada.",
-    "resetPrediction": "Hacer otra predicción",
-    "linked": "Tasa relacionada",
-    "capture": "Registrar este tamaño y tasa",
-    "recorded": "Par registrado",
+    "correct": "Correcto.",
+    "incorrect": "No del todo.",
     "tankNote": "Una superficie de agua más ancha necesita más volumen para la misma subida de nivel.",
     "ladderNote": "Cuando el pie se aleja, la parte superior baja para mantener fija la longitud.",
     "oilNote": "Cada metro adicional de radio agrega más área a un círculo mayor.",
-    "ruleNote": "El cambio de una variable afecta a la otra mediante la ecuación."
+    "ruleNote": "Mira las flechas: la vertical es la tasa vinculada.",
+    "relation": "Relación",
+    "predictPrompt": "Mantén fija la tasa de entrada. Cuando {{size}} aumenta, ¿|{{output}}| se vuelve…",
+    "larger": "Mayor",
+    "same": "Igual",
+    "smaller": "Menor",
+    "largerTrend": "Aquí |{{output}}| crece cuando {{size}} crece.",
+    "sameTrend": "Aquí |{{output}}| no cambia cuando {{size}} crece.",
+    "smallerTrend": "Aquí |{{output}}| disminuye cuando {{size}} crece.",
+    "nextStep": "Siguiente paso",
+    "hideSteps": "Ocultar pasos"
   }
 }

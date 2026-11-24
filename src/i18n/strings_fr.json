@@ -10,28 +10,28 @@
     "ruleLab": {
       "screenSummary": {
         "playArea": "Un point mobile sur une courbe définie par une équation.",
-        "controlArea": "Réglez la taille et le taux avec les curseurs. Prédisez le signe du taux lié, puis lancez ou avancez la lecture.",
+        "controlArea": "Réglez la mesure et le taux d’entrée, lancez ou avancez pas à pas, prédisez l’évolution du taux lié et révélez la dérivation étape par étape.",
         "interactionHint": "Changez un taux d’entrée et prédisez l’évolution de la grandeur liée."
       }
     },
     "conicalTank": {
       "screenSummary": {
         "playArea": "Vue de côté d’un cône en remplissage avec la surface de l’eau indiquée.",
-        "controlArea": "Réglez la taille et le taux avec les curseurs. Prédisez le signe du taux lié, puis lancez ou avancez la lecture.",
+        "controlArea": "Réglez la mesure et le taux d’entrée, lancez ou avancez pas à pas, prédisez l’évolution du taux lié et révélez la dérivation étape par étape.",
         "interactionHint": "Gardez le débit fixe. L’eau monte-t-elle plus vite près de la pointe ou du bord supérieur ?"
       }
     },
     "slidingLadder": {
       "screenSummary": {
         "playArea": "Une échelle de longueur fixe appuyée contre un mur vertical et un sol horizontal.",
-        "controlArea": "Réglez la taille et le taux avec les curseurs. Prédisez le signe du taux lié, puis lancez ou avancez la lecture.",
+        "controlArea": "Réglez la mesure et le taux d’entrée, lancez ou avancez pas à pas, prédisez l’évolution du taux lié et révélez la dérivation étape par étape.",
         "interactionHint": "Déplacez le pied d’une échelle de longueur fixe. Prédisez le mouvement du haut le long du mur."
       }
     },
     "oilSlick": {
       "screenSummary": {
         "playArea": "Une nappe de pétrole circulaire dont le rayon est indiqué.",
-        "controlArea": "Réglez la taille et le taux avec les curseurs. Prédisez le signe du taux lié, puis lancez ou avancez la lecture.",
+        "controlArea": "Réglez la mesure et le taux d’entrée, lancez ou avancez pas à pas, prédisez l’évolution du taux lié et révélez la dérivation étape par étape.",
         "interactionHint": "Gardez fixe le taux de croissance de l’aire. Comparez la vitesse du bord pour deux tailles."
       }
     }
@@ -40,7 +40,6 @@
     "title": "Simulation"
   },
   "lesson": {
-    "changeRule": "Changer de règle",
     "curveHandle": "Point sur la courbe",
     "waterHandle": "Surface de l’eau",
     "ladderFoot": "Pied de l’échelle",
@@ -50,26 +49,26 @@
     "moveHandleHorizontal": "Utilisez Gauche et Droite ou A et D pour déplacer la poignée horizontalement.",
     "moveHandleVertical": "Utilisez Haut et Bas ou W et S pour déplacer la poignée verticalement.",
     "moveHandleFine": "Maintenez Maj enfoncée pour déplacer la poignée par petits pas.",
-    "chain": "Règle de la chaîne",
-    "implicit": "Dérivation implicite",
-    "size": "Mesure de départ",
+    "size": "Mesure",
     "rate": "Taux d’entrée",
     "play": "Lecture",
     "pause": "Pause",
     "step": "Avancer",
-    "predict": "Prédisez le signe du taux lié",
-    "positive": "Positif",
-    "zero": "Nul",
-    "negative": "Négatif",
-    "correct": "Le signe prédit correspond.",
-    "incorrect": "Comparez le signe du taux calculé.",
-    "resetPrediction": "Faire une autre prédiction",
-    "linked": "Taux lié",
-    "capture": "Noter cette taille et ce taux",
-    "recorded": "Paire notée",
+    "correct": "Exact.",
+    "incorrect": "Pas tout à fait.",
     "tankNote": "Une surface d’eau plus large demande plus de volume pour la même hausse du niveau.",
     "ladderNote": "Quand le pied s’éloigne, le haut descend pour maintenir la longueur de l’échelle.",
     "oilNote": "Chaque mètre de rayon supplémentaire ajoute plus d’aire à un cercle plus grand.",
-    "ruleNote": "Une variation d’une variable agit sur l’autre par l’équation."
+    "ruleNote": "Observez les flèches : la verticale est le taux lié.",
+    "relation": "Relation",
+    "predictPrompt": "Gardez le taux d’entrée fixe. Quand {{size}} augmente, |{{output}}| va-t-il devenir…",
+    "larger": "Plus grand",
+    "same": "Identique",
+    "smaller": "Plus petit",
+    "largerTrend": "Ici |{{output}}| augmente quand {{size}} augmente.",
+    "sameTrend": "Ici |{{output}}| ne change pas quand {{size}} augmente.",
+    "smallerTrend": "Ici |{{output}}| diminue quand {{size}} augmente.",
+    "nextStep": "Étape suivante",
+    "hideSteps": "Masquer les étapes"
   }
 }

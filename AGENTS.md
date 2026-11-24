@@ -4,31 +4,24 @@ Sim-specific context for AI assistants. General SceneryStack guidance: [OpenLyce
 
 ## Project
 
-Related Rates (`related-rates`) is a SceneryStack simulation scaffolded from SceneryStackTemplate.
+Related Rates (`related-rates`) links the rates of two quantities tied by an equation. One shared model and view (`src/common/`) branch on `model.kind`; the four screen folders are thin wrappers.
+
+- **Rule Lab:** a combo box of relations (y = u², y = √u, y = sin u, xy = 12, x² + y² = 25). The moving point carries two velocity arrows: du/dt horizontal, dy/dt vertical.
+- **Conical Tank, Sliding Ladder, Oil Slick:** a picture with draggable handles and velocity arrows, and a graph of |output rate| against the measurement at the current input rate. Arrows show the distance covered in 3 s, in the picture's own scale. The tank is drawn to r = h/2. The ladder runs to x = 4.95 m, where dy/dt reaches about 7 dx/dt.
+- **Every screen:**
+  - Both rates are shown live.
+  - "Next step" reveals the derivation (relation, differentiate, substitute, result) with the current values.
+  - The prediction asks whether |output rate| will grow, stay the same or shrink as the measurement increases with the input rate fixed. It is judged by `trend()` when it is made, so the verdict does not drift during play.
 
 ## Key files
 
 | File | Purpose |
 |---|---|
-| `src/RelatedRatesColors.ts` | All `ProfileColorProperty` instances |
-| `src/RelatedRatesConstants.ts` | Named numeric constants |
-| `src/RelatedRatesNamespace.ts` | Namespace for color property names |
-| `src/i18n/StringManager.ts` | Singleton localized string accessor |
-| `src/common/RelatedRatesPanel.ts` | Pre-themed `Panel` wrapper |
-| `src/common/RelatedRatesButtonOptions.ts` | Flat button / combo-box option bundles |
-| `src/common/TimeModel.ts` | Play/pause, speed, and elapsed time composed by screen models |
-| `src/rule-lab/RuleLabScreen.ts` | Screen wrapper |
-| `src/rule-lab/model/RuleLabModel.ts` | Simulation state and logic |
-| `src/rule-lab/view/RuleLabScreenView.ts` | Visual nodes, layout, a11y wiring |
-| `src/conical-tank/ConicalTankScreen.ts` | Screen wrapper |
-| `src/conical-tank/model/ConicalTankModel.ts` | Simulation state and logic |
-| `src/conical-tank/view/ConicalTankScreenView.ts` | Visual nodes, layout, a11y wiring |
-| `src/sliding-ladder/SlidingLadderScreen.ts` | Screen wrapper |
-| `src/sliding-ladder/model/SlidingLadderModel.ts` | Simulation state and logic |
-| `src/sliding-ladder/view/SlidingLadderScreenView.ts` | Visual nodes, layout, a11y wiring |
-| `src/oil-slick/OilSlickScreen.ts` | Screen wrapper |
-| `src/oil-slick/model/OilSlickModel.ts` | Simulation state and logic |
-| `src/oil-slick/view/OilSlickScreenView.ts` | Visual nodes, layout, a11y wiring |
+| `src/common/model/RelatedRatesModel.ts` | `settings`, `dependent`, `linkedRate`, `trend`, `advance` (geometry-preserving time step), prediction and derivation state |
+| `src/common/RelatedRatesView.ts` | Symbols and `derivation()` per relation, pictures, arrows, rate graph, handles |
+| `src/common/LessonView.ts` | Canonical Calculus I scaffold, kept identical with Limit Explorer, Mean Value Theorem and Riemann Sum Builder apart from the sim prefix |
+| `tests/rates.test.ts` | Each relation's derivative against a numeric slope, trends, geometry and boundary timing, prediction state |
+| `tests/browser/keyboard-drag.spec.ts` | Keyboard picture handles; prediction and derivation in the screen description |
 
 ## Compliance carve-outs
 

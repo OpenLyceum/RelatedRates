@@ -5,6 +5,9 @@ import {
   dependent,
   linkedRate,
   RelatedRatesModel,
+  rules,
+  settings,
+  trend,
 } from "../src/common/model/RelatedRatesModel.js";
 
 describe("related rates", () => {
@@ -33,6 +36,42 @@ describe("related rates", () => {
     model.step(1000);
     expect(model.sizeProperty.value).toBe(6);
     expect(model.timer.isPlayingProperty.value).toBe(false);
+    model.dispose();
+  });
+
+  it("differentiates every Rule Lab relation correctly", () => {
+    for (const rule of rules) {
+      const { min, max } = settings[rule];
+      for (const u of [min + 0.3, (min + max) / 2, max - 0.3]) {
+        const h = 1e-6;
+        const numeric = (dependent(rule, u + h) - dependent(rule, u - h)) / (2 * h);
+        expect(linkedRate(rule, u, 0.7)).toBeCloseTo(numeric * 0.7, 6);
+      }
+    }
+  });
+
+  it("knows whether the linked rate speeds up or slows down", () => {
+    expect(trend("conical-tank", 2, 1)).toBe("smaller");
+    expect(trend("oil-slick", 2, 1)).toBe("smaller");
+    expect(trend("sliding-ladder", 3, 0.5)).toBe("larger");
+    expect(trend("chain", 2, 0.5)).toBe("larger");
+    expect(trend("chain", 2, 0)).toBe("same");
+    // |cos u| shrinks toward u = π/2 and grows past it.
+    expect(trend("sine", 1, 0.5)).toBe("smaller");
+    expect(trend("sine", 2, 0.5)).toBe("larger");
+  });
+
+  it("judges a prediction at the moment it is made and resets with the relation", () => {
+    const model = new RelatedRatesModel("rule-lab");
+    model.predict("smaller");
+    expect(model.answer.value).toBe("larger");
+    model.revealStep();
+    model.revealStep();
+    expect(model.revealed.value).toBe(2);
+    model.rule.value = "implicit";
+    expect(model.prediction.value).toBeNull();
+    expect(model.revealed.value).toBe(0);
+    expect(model.sizeProperty.value).toBe(settings.implicit.start);
     model.dispose();
   });
 });
