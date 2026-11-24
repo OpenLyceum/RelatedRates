@@ -218,7 +218,7 @@ export class RelatedRatesView extends LessonView {
         snapshot.reset();
       },
     );
-    this.addHandles(model);
+    this.addHandles(model, () => measurements.value);
     Multilink.multilink([localeProperty, model.rule, model.size], () => this.draw(model));
   }
 
@@ -228,8 +228,9 @@ export class RelatedRatesView extends LessonView {
   /**
    * Grab handles on the play area drive `model.size`, the same quantity as the size slider,
    * so the slider stays the keyboard path. Grabbing pauses the animation so the drag wins.
+   * The readout shows the measurements only: the linked rate is what the student predicts.
    */
-  private addHandles(model: RelatedRatesModel): void {
+  private addHandles(model: RelatedRatesModel, readout: () => string): void {
     const plot = this.plot;
     const setSize = (value: number) => {
       const { min, max } = settings[model.kind];
@@ -243,6 +244,7 @@ export class RelatedRatesView extends LessonView {
         fill: Colors.secondaryColorProperty,
         cursor: "ew-resize",
         start: pause,
+        readout,
         drag: (x) => setSize(plot.modelX(x)),
       });
       this.placeHandles = () => {
@@ -253,6 +255,7 @@ export class RelatedRatesView extends LessonView {
       const surface = plot.handle({
         cursor: "ns-resize",
         start: pause,
+        readout,
         drag: (_x, y) => setSize(((tank.tip - y) / (tank.tip - tank.top)) * tankHeight),
       });
       this.placeHandles = () => {
@@ -264,12 +267,14 @@ export class RelatedRatesView extends LessonView {
         fill: Colors.secondaryColorProperty,
         cursor: "ew-resize",
         start: pause,
+        readout,
         drag: (x) => setSize((x - ladder.left) / ladder.scale),
       });
       const top = plot.handle({
         fill: Colors.secondaryColorProperty,
         cursor: "ns-resize",
         start: pause,
+        readout,
         // The ladder keeps its length: raising the top pulls the foot toward the wall.
         drag: (_x, y) => {
           const height = Math.max(0, (ladder.floor - y) / ladder.scale);
@@ -286,6 +291,7 @@ export class RelatedRatesView extends LessonView {
         fill: Colors.secondaryColorProperty,
         cursor: "move",
         start: pause,
+        readout,
         drag: (x, y) => setSize(Math.hypot(x - oil.x, y - oil.y) / oil.scale),
       });
       this.placeHandles = () => edge.place(oil.x + model.size.value * oil.scale, oil.y);
