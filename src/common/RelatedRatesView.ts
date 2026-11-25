@@ -8,6 +8,15 @@ import { ArrowNode } from "scenerystack/scenery-phet";
 import { StringManager } from "../i18n/StringManager.js";
 import Colors from "../RelatedRatesColors.js";
 import {
+  ARROW_SECONDS,
+  KEYBOARD_SIZE_STEP,
+  LADDER_PICTURE as ladder,
+  MAX_ARROW,
+  MINI_GRAPH as mini,
+  OIL_PICTURE as oil,
+  TANK_PICTURE as tank,
+} from "../RelatedRatesConstants.js";
+import {
   button,
   type Choice,
   column,
@@ -106,23 +115,13 @@ function derivation(kind: Experiment, size: number, rate: number, unit: string):
   }
 }
 
-// Plot-pixel geometry of the three pictured experiments, shared by drawing and dragging.
-// The tank is drawn to the model's r = h/2 (132 px of radius over 264 px of height).
-const tank = { x: 190, top: 55, tip: 319, radius: 132 };
-const ladder = { left: 70, floor: 310, scale: 54 };
-const oil = { x: 185, y: 180, scale: 38 };
 // Pixels per metre in each picture. A velocity arrow shows the distance covered in ARROW_SECONDS,
 // long enough for slow edges to show and still in the picture's own scale.
-const ARROW_SECONDS = 3;
 const pixelsPerMetre = {
   "conical-tank": (tank.tip - tank.top) / tankHeight,
   "sliding-ladder": ladder.scale,
   "oil-slick": oil.scale,
 };
-// The rate-against-measurement graph beside each picture.
-const mini = { left: 410, right: 590, top: 42, bottom: 300 };
-const MAX_ARROW = 150;
-const KEYBOARD_SIZE_STEP = 0.04;
 
 export class RelatedRatesView extends LessonView {
   public constructor(model: RelatedRatesModel) {

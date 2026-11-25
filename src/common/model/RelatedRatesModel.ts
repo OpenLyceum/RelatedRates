@@ -1,6 +1,9 @@
 import { NumberProperty, Property } from "scenerystack/axon";
 import type { TModel } from "scenerystack/joist";
+import { ladderLength, tankHeight } from "../../RelatedRatesConstants.js";
 import { TimeModel } from "../TimeModel.js";
+
+export { ladderLength, tankHeight } from "../../RelatedRatesConstants.js";
 
 type Scene = "rule-lab" | "conical-tank" | "sliding-ladder" | "oil-slick";
 /** The relations offered on Rule Lab, between a driven variable (u or x) and y. */
@@ -9,8 +12,6 @@ export type Rule = (typeof rules)[number];
 export type Experiment = Rule | Exclude<Scene, "rule-lab">;
 /** How the size of the linked rate changes as the measurement grows, at a fixed input rate. */
 export type Trend = "larger" | "same" | "smaller";
-export const ladderLength = 5;
-export const tankHeight = 6;
 export const coneVolume = (height: number): number => (Math.PI * height ** 3) / 12;
 
 export const settings = {
