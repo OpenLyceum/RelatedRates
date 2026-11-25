@@ -71,6 +71,8 @@ export function linkedRate(kind: Experiment, size: number, rate: number): number
 /**
  * Whether |linked rate| grows, stays put, or shrinks as the measurement increases with the
  * input rate held fixed, from the slope of |linked rate| at the current size.
+ *
+ * @internal Exported for unit tests; not part of the application API.
  */
 export function trend(kind: Experiment, size: number, rate: number): Trend {
   const { min, max } = settings[kind];
